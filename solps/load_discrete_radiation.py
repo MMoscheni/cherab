@@ -36,6 +36,8 @@ def load_discrete_sol_radiation(config, parent = None):
 
     # obtain SOLPS simulation
     print('\nReading SOL data from FILE...\n')
+    
+    hello bitches!
 
     if parent is None:
       raise TypeError('A parent node, e.g. World(), must be provided!')
