@@ -262,7 +262,8 @@ cdef class AxisymmetricMapper(Function3D):
 
         return self.function2d.evaluate(sqrt(x*x + y*y), z)
 
-# MMM 26.01.2022
+#####################################################################################
+# MMM 26.01.2022: start
 
 cdef class DiscreteToroidalMapper(Function3D):
     
@@ -312,6 +313,8 @@ cdef class DiscreteToroidalMapper(Function3D):
 
         return self.function2d.evaluate(sqrt(x*x + y*y), z)
 
+# MMM 26.01.2022: end
+#####################################################################################
 
 cdef class VectorAxisymmetricMapper(VectorFunction3D):
     """
