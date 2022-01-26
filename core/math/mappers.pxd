@@ -60,7 +60,7 @@ cdef class AxisymmetricMapper(Function3D):
 
     cdef double evaluate(self, double x, double y, double z) except? -1e999
 
-
+# MMM 26.01.2022: start
 cdef class DiscreteToroidalMapper(Function3D):
 
     cdef:
@@ -68,7 +68,7 @@ cdef class DiscreteToroidalMapper(Function3D):
        double periodicity, where_non_zero
 
     cdef double evaluate(self, double x, double y, double z) except? -1e999
-
+# MMM 26.01.2022: end
 
 cdef class VectorAxisymmetricMapper(VectorFunction3D):
 
