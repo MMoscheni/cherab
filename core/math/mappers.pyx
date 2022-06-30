@@ -262,19 +262,50 @@ cdef class AxisymmetricMapper(Function3D):
 
         return self.function2d.evaluate(sqrt(x*x + y*y), z)
 
-#####################################################################################
-# MMM 26.01.2022: start
-
-cdef class DiscreteToroidalMapper(Function3D):
     
+cdef class DiscreteToroidalMapper(Function3D):
     """
-    Matteo, add some comments...
+    Performs a periodic (of period = periodicity) discrete rotation of a 2D function
+    (defined on the xz plane) around the z-axis. The resulting 3D function is a piece-
+    wise function, which is non-zero over a range of where_non_zero [rad] in each slice.
+
+    Due to the nature of this mapping, only the positive region of the x range
+    of the supplied function is mapped.
+    
+    :param Function2D function2d: The function to be mapped.
+    :param float periodicity: Periodicity [rad] of the 3D mapping,
+                               i.e. 1 / periodicity = number of slices.
+    :param float where_non_zero: Angle [rad] in each slice where the resulting function
+                                  is non-zero.
+
+    .. code-block:: pycon
+
+       >>> import numpy as np
+       >>> from cherab.core.math import DiscreteToroidalMapper
+       >>>
+       >>> def f1(r, z):
+       >>>     return r
+       >>>
+       >>> periodicity = 2 * np.pi / 2      # 2 slices (x>0 and x<0 half-spaces)
+       >>> where_non_zero = periodicity / 2 # half of each slice is non-zero (1st and 3rd quadrants)
+       >>>
+       >>> f2 = DiscreteToroidalMapper(f1,
+                                       periodicity = periodicity,
+                                       where_non_zero = where_non_zero)
+       >>>
+       >>> f2(+1/np.sqrt(2), +1/np.sqrt(2), 0)
+       0.99999999
+       >>> f2(+1/np.sqrt(2), -1/np.sqrt(2), 0)
+       0.0
     """
 
     def __init__(self, object function2d, double periodicity, double where_non_zero):
 
         if not callable(function2d):
             raise TypeError("Function3D is not callable.")
+
+        if where_non_zero > periodicity:
+            raise ValueError("where_non_zero must be smaller than periodicity.")
 
         self.function2d = autowrap_function2d(function2d)
 
@@ -290,31 +321,28 @@ cdef class DiscreteToroidalMapper(Function3D):
     @cython.initializedcheck(False)
     cdef double evaluate(self, double x, double y, double z) except? -1e999:
         """Return the value of function2d when it is y-axis symmetrically
-        extended to the 3D space."""
+        extended to the 3D space and falling in where_non_zero range.
+        Return 0 otherwise."""
 
         cdef:
             double phi, phi_dw, phi_up
             int n, num
 
-        # toroidal angle [rad]: range [0; 2pi] but atan2 [-pi ; +pi]
+        # toroidal angle [rad]
         phi = atan2(y, x) + M_PI
 
-        # number of sectors
+        # number of slices
         num = int(2 * M_PI / self.periodicity)
 
-        # check for zeros: if where_non_zero < where_zero then more efficient
+        # check if zero must be returned (more efficient)
         for n from 0 <= n < num by 1:
-
             phi_dw = n * self.periodicity + self.where_non_zero
             phi_up = (n + 1) * self.periodicity
-
             if phi > phi_dw and phi < phi_up:
                 return 0.0
 
         return self.function2d.evaluate(sqrt(x*x + y*y), z)
 
-# MMM 26.01.2022: end
-#####################################################################################
 
 cdef class VectorAxisymmetricMapper(VectorFunction3D):
     """
