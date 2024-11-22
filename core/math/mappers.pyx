@@ -262,7 +262,8 @@ cdef class AxisymmetricMapper(Function3D):
 
         return self.function2d.evaluate(sqrt(x*x + y*y), z)
 
-    
+
+# MMM
 cdef class DiscreteToroidalMapper(Function3D):
     """
     Performs a periodic (of period = periodicity) discrete rotation of a 2D function

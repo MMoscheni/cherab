@@ -31,6 +31,6 @@ from .interpolators import Interpolate3DLinear, Interpolate3DCubic
 from .caching import Caching1D, Caching2D, Caching3D
 from .clamp import ClampOutput1D, ClampOutput2D, ClampOutput3D
 from .clamp import ClampInput1D, ClampInput2D, ClampInput3D
-from .mappers import IsoMapper2D, IsoMapper3D, Swizzle2D, Swizzle3D, AxisymmetricMapper, DiscreteToroidalMapper, VectorAxisymmetricMapper
+from .mappers import IsoMapper2D, IsoMapper3D, Swizzle2D, Swizzle3D, AxisymmetricMapper, VectorAxisymmetricMapper, DiscreteToroidalMapper
 from .mask import PolygonMask2D
 from .slice import Slice2D, Slice3D
